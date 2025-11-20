@@ -7,6 +7,20 @@ import pickle
 from dotenv import load_dotenv
 import google.generativeai as genai
 import os
+import json
+
+VOTE_FILE = "votes.json"
+
+def load_votes():
+    if os.path.exists(VOTE_FILE):
+        with open(VOTE_FILE, "r") as f:
+            return json.load(f)
+    else:
+        return {"biased": 0, "not_biased": 0}
+
+def save_votes(votes):
+    with open(VOTE_FILE, "w") as f:
+        json.dump(votes, f)
 
 # load gemini API key
 load_dotenv()  
@@ -177,6 +191,44 @@ class1_shap_values = shap_values[:, :, 1]
 
 # Sidebar Navigation 
 view = st.sidebar.radio("View", ["Global Explanation", "Local Explanation", "Customize Your Own"])
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("### Do you think the model is biased?")
+
+votes = load_votes()
+
+vote_choice = st.sidebar.radio(
+    "Your Vote",
+    ["I think it IS biased", "I think it is NOT biased"],
+    index=None,
+    key="bias_vote_selection"
+)
+
+if st.sidebar.button("Submit Vote"):
+    if vote_choice is None:
+        st.sidebar.warning("Please choose an option before voting.")
+    else:
+        if vote_choice == "I think it IS biased":
+            votes["biased"] += 1
+        else:
+            votes["not_biased"] += 1
+
+        save_votes(votes)
+        st.sidebar.success("Thanks for voting!")
+
+# Show vote results
+total_votes = votes["biased"] + votes["not_biased"]
+
+if total_votes > 0:
+    pct_biased = votes["biased"] / total_votes * 100
+    pct_not_biased = votes["not_biased"] / total_votes * 100
+
+    st.sidebar.markdown("### Vote Results")
+    st.sidebar.write(f"**Biased:** {pct_biased:.1f}%")
+    st.sidebar.write(f"**Not Biased:** {pct_not_biased:.1f}%")
+
+else:
+    st.sidebar.info("No votes yet.")
 
 # Dataset Details
 with st.expander("Dataset Details"):
