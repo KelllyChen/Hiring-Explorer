@@ -19,6 +19,8 @@ if __name__ == "__main__":
     df = pd.read_csv("recruitment_data.csv")
     model, X_train, X_test, y_test = train_model(df)
 
+    print(classification_report(y_test, model.predict(X_test)))
+
     # save model
     with open("rf_model.pkl", "wb") as f:
         pickle.dump(model, f)
@@ -27,4 +29,10 @@ if __name__ == "__main__":
     with open("X_train.pkl", "wb") as f:
         pickle.dump(X_train, f)
 
-    print("Model and training data saved.")
+    with open("X_test.pkl", "wb") as f:
+        pickle.dump(X_test, f)
+
+    with open("y_test.pkl", "wb") as f:
+        pickle.dump(y_test, f)
+
+    print("Model and data saved.")

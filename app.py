@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import google.generativeai as genai
 import os
 import json
+from sklearn.metrics import accuracy_score
 
 VOTE_FILE = "votes.json"
 
@@ -141,7 +142,7 @@ if st.session_state.page == "intro":
     The goal is to understand how each feature contributes to the model’s prediction.
     <br><br>
     You can view the dataset here:  
-    <a href="https://www.kaggle.com/datasets/rabieelkharoua/predicting-hiring-decisions-in-recruitment-data" target="_blank">📄 recruitment_data.csv</a>
+    <a href="https://www.kaggle.com/datasets/rabieelkharoua/predicting-hiring-decisions-in-recruitment-data" target="_blank">💼 recruitment_data.csv</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -153,7 +154,7 @@ if st.session_state.page == "intro":
     col1, col2, col3 = st.columns([4, 1, 4])
 
     with col2:
-        st.button("➡️ Explore the Model", on_click=go_to_explorer)
+        st.button("Explore the Model", on_click=go_to_explorer)
 
     st.stop()
 
@@ -177,14 +178,25 @@ def load_shap():
     with open("X_train.pkl", "rb") as f:
         X_train = pickle.load(f)
 
-    X_test = df.drop("HiringDecision", axis=1)
+    #X_test = df.drop("HiringDecision", axis=1)
+    with open("X_test.pkl", "rb") as f:
+        X_test = pickle.load(f)
+
+    with open("y_test.pkl", "rb") as f:
+        y_test = pickle.load(f)
 
     explainer = shap.Explainer(model, X_train)
     shap_values = explainer(X_test)
 
-    return model, X_train, X_test, shap_values, explainer
+    return model, X_train, X_test, y_test, shap_values, explainer
 
-model, X_train, X_test, shap_values, explainer = load_shap()
+model, X_train, X_test, y_test, shap_values, explainer = load_shap()
+
+y_test_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_test_pred)
+st.write(f"### Model Accuracy on Test Set: {accuracy:.2%}")
+
+
 
 # Extract class-1 SHAP values
 class1_shap_values = shap_values[:, :, 1]
@@ -295,7 +307,7 @@ with st.expander("Dataset Details"):
 
 
 if view == "Global Explanation":
-    st.subheader("Global Feature Importance (class 1)")
+    st.subheader("Global Feature Importance (class 1: Hired)")
 
     
     # SHAP Beeswarm Plot
