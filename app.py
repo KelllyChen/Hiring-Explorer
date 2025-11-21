@@ -109,7 +109,7 @@ if st.session_state.page == "intro":
     st.markdown("""
     <div class='info-card'>
         Welcome to the Recruitment Decision Explainer!  
-        This interactive demo shows <b>why</b> a model predicts the way it does using SHAP — 
+        This interactive demo shows <b>why</b> a model predicts the way it does using SHAP, 
         a powerful framework for interpreting complex models.
         <br><br>
         Here's what you’ll explore:
@@ -157,8 +157,6 @@ if st.session_state.page == "intro":
         st.button("Explore the Model", on_click=go_to_explorer)
 
     st.stop()
-
-
 
 
 # Page 2: SHAP Explorer
@@ -350,6 +348,7 @@ elif view == "Local Explanation":
     pred = model.predict(x_row)[0]
     proba = model.predict_proba(x_row)[0]
 
+    st.write(f"**Actual Class:** {y_test.iloc[idx]}")
     st.write(f"**Predicted Class:** {pred}")
     st.write(f"Probability (Hired = 1): {proba[1]:.3f}")
 
@@ -413,13 +412,11 @@ elif view == "Customize Your Own":
         )
 
 
-    # Create a dataframe with the SAME column order as X_train
+  
     input_df = pd.DataFrame([[
         age, gender, edu, exp_years, prev_comp, distance, interview, skill, personality, strategy
     ]], columns=X_train.columns)
 
-    st.write("### Candidate Profile")
-    st.dataframe(input_df.T)
 
     # Make Prediction
     pred_proba = model.predict_proba(input_df)[0]
