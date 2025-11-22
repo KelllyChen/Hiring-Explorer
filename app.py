@@ -9,8 +9,24 @@ import google.generativeai as genai
 import os
 import json
 from sklearn.metrics import accuracy_score
+import shutil
 
-VOTE_FILE = "votes/votes.json"
+VOTE_DIR = "votes"
+VOTE_TEMPLATE = os.path.join(VOTE_DIR, "votes_template.json")
+VOTE_FILE = os.path.join(VOTE_DIR, "votes_data.json")
+
+# Ensure votes directory exists
+os.makedirs(VOTE_DIR, exist_ok=True)
+
+def ensure_vote_file():
+    """Create votes.json from template if it does not exist."""
+    if not os.path.exists(VOTE_FILE):
+        if os.path.exists(VOTE_TEMPLATE):
+            shutil.copy(VOTE_TEMPLATE, VOTE_FILE)
+        else:
+            # fallback: create default structure
+            with open(VOTE_FILE, "w") as f:
+                json.dump({"biased": 0, "not_biased": 0}, f)
 
 def load_votes():
     if os.path.exists(VOTE_FILE):
