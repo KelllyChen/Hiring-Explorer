@@ -10,7 +10,7 @@ import os
 import json
 from sklearn.metrics import accuracy_score
 
-VOTE_FILE = "votes.json"
+VOTE_FILE = "votes/votes.json"
 
 def load_votes():
     if os.path.exists(VOTE_FILE):
@@ -138,8 +138,9 @@ if st.session_state.page == "intro":
     st.markdown("<div class='section-title'>Data</div>", unsafe_allow_html=True)
     st.markdown("""
     <div class='info-card'>
-    This demo uses a recruitment dataset containing candidate features and a hiring decision label.
-    The goal is to understand how each feature contributes to the model’s prediction.
+    <li>This demo uses a recruitment dataset containing candidate features and a hiring decision label.</li>
+    <li>Data was splitted into 80% training and 20% test sets and a RandomForestClassifier was trained on the data.</li>
+    <li>The goal is to understand how each feature contributes to the model’s prediction.</li>
     <br><br>
     You can view the dataset here:  
     <a href="https://www.kaggle.com/datasets/rabieelkharoua/predicting-hiring-decisions-in-recruitment-data" target="_blank">💼 recruitment_data.csv</a>
@@ -164,23 +165,23 @@ if st.session_state.page == "intro":
 
 st.title("Recruitment Decision Explainer")
 
-df = pd.read_csv("recruitment_data.csv")
+df = pd.read_csv("data/recruitment_data.csv")
 st.write("### Preview of data")
 st.dataframe(df.head())
 
 # load model, data, SHAP values
 @st.cache_resource
 def load_shap():
-    with open("rf_model.pkl", "rb") as f:
+    with open("data/rf_model.pkl", "rb") as f:
         model = pickle.load(f)
-    with open("X_train.pkl", "rb") as f:
+    with open("data/X_train.pkl", "rb") as f:
         X_train = pickle.load(f)
 
     #X_test = df.drop("HiringDecision", axis=1)
-    with open("X_test.pkl", "rb") as f:
+    with open("data/X_test.pkl", "rb") as f:
         X_test = pickle.load(f)
 
-    with open("y_test.pkl", "rb") as f:
+    with open("data/y_test.pkl", "rb") as f:
         y_test = pickle.load(f)
 
     explainer = shap.Explainer(model, X_train)

@@ -3,6 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 import pickle
+import os   
 
 def train_model(df):
     y =df['HiringDecision']
@@ -16,23 +17,25 @@ def train_model(df):
     return model, X_train, X_test, y_test
 
 if __name__ == "__main__":
-    df = pd.read_csv("recruitment_data.csv")
+    df = pd.read_csv("data/recruitment_data.csv")
     model, X_train, X_test, y_test = train_model(df)
 
     print(classification_report(y_test, model.predict(X_test)))
 
+    os.makedirs("data", exist_ok=True)
+
     # save model
-    with open("rf_model.pkl", "wb") as f:
+    with open("data/rf_model.pkl", "wb") as f:
         pickle.dump(model, f)
 
     # save training features for SHAP explainer later
-    with open("X_train.pkl", "wb") as f:
+    with open("data/X_train.pkl", "wb") as f:
         pickle.dump(X_train, f)
 
-    with open("X_test.pkl", "wb") as f:
+    with open("data/X_test.pkl", "wb") as f:
         pickle.dump(X_test, f)
 
-    with open("y_test.pkl", "wb") as f:
+    with open("data/y_test.pkl", "wb") as f:
         pickle.dump(y_test, f)
 
     print("Model and data saved.")
