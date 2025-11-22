@@ -17,6 +17,7 @@ The data was collected from [Kaggle](https://www.kaggle.com/datasets/rabieelkhar
 - Create venv `virtualenv .venv`
 - Activate venv `.\.venv\Scripts\activate`
 - Install packages `pip install -r requirements.txt`
+- Create your own Gemini API key and store in .env file
 
 To recreate the model, run `python model.py`
 
