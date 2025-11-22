@@ -12,6 +12,7 @@ from sklearn.metrics import accuracy_score
 
 VOTE_FILE = "votes.json"
 
+# Functions to load and save votes
 def load_votes():
     if os.path.exists(VOTE_FILE):
         with open(VOTE_FILE, "r") as f:
@@ -117,6 +118,7 @@ if st.session_state.page == "intro":
             <li>How the model reasons at a <b>global</b> level</li>
             <li>Why it made a specific <b>hiring decision</b></li>
             <li>Which features <b>helped</b> or <b>hurt</b> a candidate</li>
+            <li>Decide for yourself if the model is <b>biased</b></li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -176,7 +178,7 @@ def load_shap():
     with open("X_train.pkl", "rb") as f:
         X_train = pickle.load(f)
 
-    #X_test = df.drop("HiringDecision", axis=1)
+   
     with open("X_test.pkl", "rb") as f:
         X_test = pickle.load(f)
 
