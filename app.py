@@ -25,9 +25,7 @@ def save_votes(votes):
 
 # load gemini API key
 load_dotenv()  
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if GEMINI_API_KEY is None:
-    st.error("GEMINI_API_KEY not found in .env")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or st.secrets.get("GEMINI_API_KEY")
 
 genai.configure(api_key=GEMINI_API_KEY)
 model_gemini = genai.GenerativeModel("gemini-2.5-flash")
@@ -360,7 +358,7 @@ elif view == "Local Explanation":
     st.pyplot(fig)
 
     # Gemini Explanation Button
-    if st.button("Explain with Gemini"):
+    if st.button("Explain Local SHAP with Gemini"):
         text = explain_shap_with_gemini(
             X_train.columns,
             shap_row.values,
@@ -436,7 +434,7 @@ elif view == "Customize Your Own":
     st.pyplot(fig)
 
     # Gemini Explanation Button
-    if st.button("Explain with Gemini (AI Explanation)"):
+    if st.button("Explain Local SHAP with Gemini"):
         try:
             gemini_text = explain_shap_with_gemini(
                 X_train.columns,
