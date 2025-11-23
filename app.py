@@ -24,7 +24,7 @@ def ensure_vote_file():
         if os.path.exists(VOTE_TEMPLATE):
             shutil.copy(VOTE_TEMPLATE, VOTE_FILE)
         else:
-            # fallback: create default structure
+            # create default structure
             with open(VOTE_FILE, "w") as f:
                 json.dump({"biased": 0, "not_biased": 0}, f)
 
