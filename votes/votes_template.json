@@ -1,5 +1,5 @@
 {
-  "_comment": "This is a template. Don't modify this file. The app will create votes.json automatically.",
+  "_comment": "This is a template. Don't modify this file. The app will create votes_data.json automatically.",
   "hire": 0,
   "reject": 0
 }
